@@ -11,208 +11,32 @@
 <script src="/assets/scripts/vendor/threex/threex-artoolkitcontext.js"></script>
 <script src="/assets/scripts/vendor/threex/threex-arbasecontrols.js"></script>
 <script src="/assets/scripts/vendor/threex/threex-armarkercontrols.js"></script>
+<script src=”https://aframe.io/releases/0.6.1/aframe.min.js></script>
 <script>THREEx.ArToolkitContext.baseURL = '../'</script>
 
-<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
-<script>
-//////////////////////////////////////////////////////////////////////////////////
-	//		Init
-	//////////////////////////////////////////////////////////////////////////////////
-
-	// init renderer
-	var renderer	= new THREE.WebGLRenderer({
-		// antialias	: true,
-		alpha: true
-	});
-// renderer.shadowMap.type = THREE.BasicShadowMap
-// renderer.shadowMap.type = THREE.PCFShadowMap;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap
-renderer.shadowMap.enabled = true;
-
-	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	// renderer.setPixelRatio( 1/2 );
-
-	renderer.setSize( window.innerWidth, window.innerHeight );
-	renderer.domElement.style.position = 'absolute'
-	renderer.domElement.style.top = '0px'
-	renderer.domElement.style.left = '0px'
-	document.body.appendChild( renderer.domElement );
-
-	// array of functions for the rendering loop
-	var onRenderFcts= [];
-
-	// init scene and camera
-	var scene	= new THREE.Scene();
-
-	var ambient = new THREE.AmbientLight( 0x666666 );
-	scene.add( ambient );
-
-	var directionalLight = new THREE.DirectionalLight( 'white' );
-	directionalLight.position.set( 1, 2, 0.3 ).setLength(2)
-	directionalLight.shadow.mapSize.set(128,128)
-	directionalLight.shadow.camera.bottom = -0.6
-	directionalLight.shadow.camera.top = 0.6
-	directionalLight.shadow.camera.right = 0.6
-	directionalLight.shadow.camera.left = -0.6
-	directionalLight.castShadow = true;
-	// scene.add(new THREE.CameraHelper( directionalLight.shadow.camera ))
-	scene.add( directionalLight );
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Initialize a basic camera
-	//////////////////////////////////////////////////////////////////////////////////
-
-	// Create a camera
-	var camera = new THREE.PerspectiveCamera();
-	scene.add(camera);
-
-	////////////////////////////////////////////////////////////////////////////////
-	//          handle arToolkitSource
-	////////////////////////////////////////////////////////////////////////////////
-
-	var arToolkitSource = new THREEx.ArToolkitSource({
-		// to read from the webcam
-		sourceType : 'webcam',
-
-		// to read from an image
-		// sourceType : 'image',
-		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',
-
-		// to read from a video
-		// sourceType : 'video',
-		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',
-	})
-
-	arToolkitSource.init(function onReady(){
-		onResize()
-	})
+<body style='margin : 0px; overflow: hidden;'>
+		<!-- add some info at the top of the page -->
+		<div style='position: fixed; top: 10px; width:100%; text-align: center; z-index: 1;'>
+			<a href="https://github.com/jeromeetienne/AR.js/" target="_blank">AR.js</a> - tango example for a-frame by <a href='https://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
+		</div>
 	
-	// handle resize
-	window.addEventListener('resize', function(){
-		onResize()
-	})
-	function onResize(){
-		arToolkitSource.onResize()	
-		arToolkitSource.copySizeTo(renderer.domElement)	
-		if( arToolkitContext.arController !== null ){
-			arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
-		}	
-	}
-	////////////////////////////////////////////////////////////////////////////////
-	//          initialize arToolkitContext
-	////////////////////////////////////////////////////////////////////////////////
-
-
-	// create atToolkitContext
-	var arToolkitContext = new THREEx.ArToolkitContext({
-		cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
-		detectionMode: 'mono',
-		// maxDetectionRate: 30,
-		// canvasWidth: 80*3,
-		// canvasHeight: 60*3,
-	})
-	// initialize it
-	arToolkitContext.init(function onCompleted(){
-		// copy projection matrix to camera
-		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
-	})
-
-	// update artoolkit on every frame
-	onRenderFcts.push(function(){
-		if( arToolkitSource.ready === false )	return
-
-		arToolkitContext.update( arToolkitSource.domElement )
-		
-		// update scene.visible if the marker is seen
-		scene.visible = camera.visible
-	})
-
-
-	////////////////////////////////////////////////////////////////////////////////
-	//          Create a ArMarkerControls
-	////////////////////////////////////////////////////////////////////////////////
-
-	var markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
-		type : 'pattern',
-		patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro',
-		// patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji',
-		// as we controls the camera, set changeMatrixMode: 'cameraTransformMatrix'
-		changeMatrixMode: 'cameraTransformMatrix'
-	})
-	// as we do changeMatrixMode: 'cameraTransformMatrix', start with invisible scene
-	scene.visible = false
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object in the scene
-	//////////////////////////////////////////////////////////////////////////////////
-
-	var markerRoot = new THREE.Group
-	scene.add(markerRoot)
+		<!-- Define your 3d scene and enabled ar.js -->
+		<a-scene embedded arjs='trackingMethod: best;'>
 	
-	// add a torus knot
-	// var geometry	= new THREE.CubeGeometry(1,1,1);
-	// var material	= new THREE.MeshNormalMaterial({
-	// 	transparent : true,
-	// 	opacity: 0.5,
-	// 	side: THREE.DoubleSide
-	// });
-	// var mesh	= new THREE.Mesh( geometry, material );
-	// mesh.position.y	= geometry.parameters.height/2
-	// markerRoot.add( mesh );
-
-	;(function(){
-		var geometry	= new THREE.CubeGeometry(1,1,1); // make it slightly larger for better view
-		var material	= new THREE.MeshNormalMaterial();
-		var material	= new THREE.MeshLambertMaterial();
-		var mesh	= new THREE.Mesh( geometry, material );
-		mesh.position.y	= geometry.parameters.height/2
-		mesh.castShadow = true;
-		mesh.receiveShadow = true;
-		markerRoot.add( mesh );
-		// point the directionalLight to the marker
-		directionalLight.target = mesh
-
-		// onRenderFcts.push(function(){
-		// 	mesh.rotation.x += 0.04;
-		// })
-
-		// add a transparent ground-plane shadow-receiver
-		var material = new THREE.ShadowMaterial();
-		material.opacity = 0.7; //! bug in threejs. can't set in constructor
-
-		var geometry = new THREE.PlaneGeometry(3, 3)
-		var planeMesh = new THREE.Mesh( geometry, material);
-		planeMesh.receiveShadow = true;
-		planeMesh.depthWrite = false;
-		planeMesh.rotation.x = -Math.PI/2
-		markerRoot.add(planeMesh);
-	})()
-
-
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		render the whole thing on the page
-	//////////////////////////////////////////////////////////////////////////////////
-	var stats = new Stats();
-	document.body.appendChild( stats.dom );
-	// render the scene
-	onRenderFcts.push(function(){
-		renderer.render( scene, camera );
-		stats.update();
-	})
-
-	// run the rendering loop
-	var lastTimeMsec= null
-	requestAnimationFrame(function animate(nowMsec){
-		// keep looping
-		requestAnimationFrame( animate );
-		// measure time
-		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
-		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
-		lastTimeMsec	= nowMsec
-		// call each update function
-		onRenderFcts.forEach(function(onRenderFct){
-			onRenderFct(deltaMsec/1000, nowMsec/1000)
-		})
-	})
-</script></body>
+			<!-- Create a anchor to attach your augmented reality -->
+			<a-anchor hit-testing-enabled='true'>
+	
+				<!-- Add your augmented reality here -->
+				<a-box position='0 0.5 0' material='opacity: 0.5; side:double; color:red;'>
+					<a-torus-knot radius='0.26' radius-tubular='0.05'>
+						<a-animation attribute="rotation" to="360 0 0" dur="5000" easing='linear' repeat="indefinite"></a-animation>
+					</a-torus-knot>
+				</a-box>
+	
+			</a-anchor>
+	
+			<!-- Define a static camera -->
+			<a-camera-static/>
+	
+		</a-scene>
+	</body>
