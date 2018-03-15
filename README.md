@@ -2,7 +2,7 @@
 This repo is POC not polished at all.
 
 ## Usage
-* Setup ur mamp with some ssl keys. using the local url > local.ar.test
+* Setup ur mamp (point it at the src folder) with some ssl keys. using the local url > local.ar.test 
 * Print this thing out https://jeromeetienne.github.io/AR.js/data/images/HIRO.jpg (or just open it in a browser window on your desktop)
 * `yarn start` to start browsersync and watch files.
 * Use the external URL and open it up on your mobile! (ios users use safari I think)
