@@ -1,0 +1,8 @@
+newmtl cardboard box
+Ka 1 1 1
+Kd 0.80000001192093 0.80000001192093 0.80000001192093
+map_Kd preset://project4d textures v2 (master collection) .lib4d/tex/br_paper.jpg
+Ks 1 1 1
+Ns 50
+illum 7
+

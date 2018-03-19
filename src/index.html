@@ -1,42 +1,29 @@
-<!DOCTYPE html>
-<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<!-- three.js library -->
-<script src='/assets/scripts/vendor/three.js/build/three.js'></script>
-<script src="/assets/scripts/vendor/three.js/examples/js/libs/stats.min.js"></script>
-<!-- jsartookit -->
-<script src="/assets/scripts/vendor/jsartoolkit5/build/artoolkit.min.js"></script>
-<script src="/assets/scripts/vendor/jsartoolkit5/js/artoolkit.api.js"></script>
-<!-- include threex.artoolkit -->
-<script src="/assets/scripts/vendor/threex/threex-artoolkitsource.js"></script>
-<script src="/assets/scripts/vendor/threex/threex-artoolkitcontext.js"></script>
-<script src="/assets/scripts/vendor/threex/threex-arbasecontrols.js"></script>
-<script src="/assets/scripts/vendor/threex/threex-armarkercontrols.js"></script>
-<script src=”https://aframe.io/releases/0.6.1/aframe.min.js></script>
-<script>THREEx.ArToolkitContext.baseURL = '../'</script>
+<!-- include a-frame -->
+<script src="/assets/scripts/vendor/aframe/build/aframe.min.js"></script>
 
+<!-- include ar.js for aframe -->
+<script src='/assets/scripts/vendor/aframe/build/aframe-ar.js'></script>
+
+
+<!-- start the body of your page -->
 <body style='margin : 0px; overflow: hidden;'>
-		<!-- add some info at the top of the page -->
-		<div style='position: fixed; top: 10px; width:100%; text-align: center; z-index: 1;'>
-			<a href="https://github.com/jeromeetienne/AR.js/" target="_blank">AR.js</a> - tango example for a-frame by <a href='https://twitter.com/jerome_etienne' target='_blank'>@jerome_etienne</a>
-		</div>
-	
-		<!-- Define your 3d scene and enabled ar.js -->
-		<a-scene embedded arjs='trackingMethod: best;'>
-	
-			<!-- Create a anchor to attach your augmented reality -->
-			<a-anchor hit-testing-enabled='true'>
-	
-				<!-- Add your augmented reality here -->
-				<a-box position='0 0.5 0' material='opacity: 0.5; side:double; color:red;'>
-					<a-torus-knot radius='0.26' radius-tubular='0.05'>
-						<a-animation attribute="rotation" to="360 0 0" dur="5000" easing='linear' repeat="indefinite"></a-animation>
-					</a-torus-knot>
-				</a-box>
-	
-			</a-anchor>
-	
-			<!-- Define a static camera -->
-			<a-camera-static/>
-	
-		</a-scene>
-	</body>
+
+  <!-- Define your 3d scene and enabled ar.js -->
+  <a-scene embedded arjs='trackingMethod: best;'>
+    <a-assets>
+      <a-asset-item id="tree-obj" src="/model.obj"></a-asset-item>
+      <a-asset-item id="tree-mtl" src="/materials.mtl"></a-asset-item>
+    </a-assets>
+
+    <!-- Create a anchor to attach your augmented reality -->
+      <a-anchor hit-testing-enabled='true'>
+
+      <a-entity obj-model="obj: #tree-obj; mtl: #tree-mtl"></a-entity>
+    </a-anchor>
+
+    <!-- Define a static camera -->
+    <a-camera-static/>
+
+  </a-scene>
+</body>
+
