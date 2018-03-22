@@ -2,28 +2,24 @@
 <script src="/assets/scripts/vendor/aframe/build/aframe.min.js"></script>
 
 <!-- include ar.js for aframe -->
-<script src='/assets/scripts/vendor/aframe/build/aframe-ar.js'></script>
+<script src='/assets/scripts/vendor/aframe/build/aframe-ar.min.js'></script>
 
 
 <!-- start the body of your page -->
-<body style='margin : 0px; overflow: hidden;'>
+<body style='margin: 0px; overflow: hidden;'>
 
-  <!-- Define your 3d scene and enabled ar.js -->
-  <a-scene embedded arjs='trackingMethod: best;'>
-    <a-assets>
-      <a-asset-item id="tree-obj" src="/model.obj"></a-asset-item>
-      <a-asset-item id="tree-mtl" src="/materials.mtl"></a-asset-item>
-    </a-assets>
+  <a-scene embedded arjs='sourceType: webcam; detectionMode: color; maxDetectionRate: 60;'>
+		<a-assets>
+			<a-asset-item id="LOGO" src="/assets/models/fish/model.obj"></a-asset-item>
+			<a-asset-item id="LOGO_MAT" src="/assets/models/fish/materials.mtl"></a-asset-item>
+		</a-assets>
 
-    <!-- Create a anchor to attach your augmented reality -->
-      <a-anchor hit-testing-enabled='true'>
+	<!-- define a camera which will move according to the marker position -->
+	<a-marker hit-testing-enabled='true' size="" preset='custom' type='pattern' url='/assets/markers/pattern-marker-box.patt'>
+	    <a-obj-model position="0 0 .5 0" src="#LOGO" mtl="#LOGO_MAT"></a-obj-model>
+	</a-marker>
+	<a-entity camera></a-entity>
 
-      <a-entity obj-model="obj: #tree-obj; mtl: #tree-mtl"></a-entity>
-    </a-anchor>
-
-    <!-- Define a static camera -->
-    <a-camera-static/>
-
-  </a-scene>
+	</a-scene>
 </body>
 
